@@ -31,7 +31,7 @@
 		}
 
 		UserDAO userDAO = new UserDAO();
-		int IP_result = userDAO.select_ip(user.getUserID(),request.getRemoteAddr()); // 세션 재사용 방지
+		int IP_result = userDAO.select_ip(user.getUserID(),request.getRemoteAddr()); // 세션 재사용 방지 2021-05-04
 		if(IP_result == 0){
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
@@ -39,13 +39,15 @@
 			script.println("history.back()");
 			script.println("</script>");
 		}
-		else{  // 중복 로그인 아닐 시 로그인 프로세스 진행
+		else{  // 중복 로그인 아닐 시 로그인 프로세스 진행 2021-05-04
 			int result = userDAO.login(user.getUserID(), user.getUserPW());
 			if(result == 1){
-				session.setAttribute("userID", user.getUserID()); // 세션에 userID 저장
-				session.setAttribute("userIP", request.getRemoteAddr()); // 세션에 접속IP 저장
+				session.invalidate(); // 세션 고정 방지 2021-05-04
+				HttpSession new_session = request.getSession(true); // 세션 고정 방지 2021-05-04
+				new_session.setAttribute("userID", user.getUserID()); // 세션에 userID 저장
+				new_session.setAttribute("userIP", request.getRemoteAddr()); // 세션에 접속IP 저장
 				
-				int IP_result2 = userDAO.insert_ip(user.getUserID(), request.getRemoteAddr()); // 세션 재사용 방지
+				int IP_result2 = userDAO.insert_ip(user.getUserID(), request.getRemoteAddr()); // 세션 재사용 방지 2021-05-04
 				if(IP_result2 == -1){
 					PrintWriter script = response.getWriter();
 					script.println("<script>");
