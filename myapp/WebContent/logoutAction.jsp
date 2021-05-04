@@ -13,7 +13,7 @@
 <body>
 	<%
 	UserDAO userDAO = new UserDAO();
-	int result = userDAO.delete_ip(request.getParameter("userid")); // 로그인 IP 삭제
+	int result = userDAO.delete_ip((String) session.getAttribute("userID")); // 로그인 IP 삭제
 	if(result == -1){
 		PrintWriter script = response.getWriter();
 		script.println("<script>");

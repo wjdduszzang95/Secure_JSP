@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="user.UserDAO"%>
 <%@ page import="java.io.PrintWriter"%>
-<%@ page import="java.util.Date"%>
+<%@ page import="java.util.*"%> 
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.net.URLEncoder"%>
 <% request.setCharacterEncoding("UTF-8"); %>
@@ -19,7 +19,7 @@
 <body>
 	<%
 		String userID = null;
-		if((String)session.getAttribute("userID") != null){
+ 		if((String)session.getAttribute("userID") != null){
 			userID = (String)session.getAttribute("userID");
 		}
 		if(userID != null){
@@ -44,6 +44,7 @@
 			if(result == 1){
 				session.invalidate(); // 세션 고정 방지 2021-05-04
 				HttpSession new_session = request.getSession(true); // 세션 고정 방지 2021-05-04
+				new_session.setMaxInactiveInterval(10*60); // 불충분한 세션 만료 방지 2021-05-04
 				new_session.setAttribute("userID", user.getUserID()); // 세션에 userID 저장
 				new_session.setAttribute("userIP", request.getRemoteAddr()); // 세션에 접속IP 저장
 				new_session.setAttribute("test", "test"); // git test 용				
@@ -57,9 +58,14 @@
 					script.println("</script>");
 				}
 				
+				String ExpTime = null;   // 불충분한 세션 만료 방지 2021-05-04
 				Date nowTime = new Date();
 				SimpleDateFormat sf = new SimpleDateFormat("yyyy년 MM월 dd일 a hh:mm:ss");
 				
+				Calendar cal = Calendar.getInstance(); // 불충분한 세션 만료 방지 2021-05-04
+				cal.setTime(nowTime); // 불충분한 세션 만료 방지 2021-05-04
+				cal.add(Calendar.MINUTE, 1); // 불충분한 세션 만료 방지 2021-05-04
+
 				String auth = null;
 				if(user.getUserID() == "admin"){
 					auth = "admin";
@@ -67,8 +73,8 @@
 				else{
 					auth = user.getUserID();
 				}
-				String cookieName[] = {"auth","login_time"};
-				String cookieValue[] = {auth,URLEncoder.encode(sf.format(nowTime),"UTF-8")};
+				String cookieName[] = {"auth","login_time","exp_time"};
+				String cookieValue[] = {auth,URLEncoder.encode(sf.format(nowTime),"UTF-8"),URLEncoder.encode(sf.format(cal.getTime()),"UTF-8")};
 				
 				for(int i=0; i<cookieName.length; i++){
 					Cookie cookie = new Cookie(cookieName[i],cookieValue[i]);

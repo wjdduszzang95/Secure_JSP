@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.io.PrintWriter"%>
-<%@ page import="java.util.Date"%>
+<%@ page import="java.util.*"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.net.URLDecoder"%>
 <%@ page import="user.UserDAO"%>
@@ -26,20 +26,14 @@
 			script.println("history.back()");
 			script.println("</script>");
 		}
-		else if(result == -1){
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('IP 조회 관련 데이터베이스 오류가 발생했습니다.')");
-			script.println("history.back()");
-			script.println("</script>");
-		}
 		
 		Date nowTime = new Date();
-	    SimpleDateFormat sf = new SimpleDateFormat("yyyy년 MM월 dd일 a hh:mm:ss");
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy년 MM월 dd일 a hh:mm:ss");
 		String userID = null;
 		String userIP = null;
 		String login_time = null;
 		String auth = null;
+		String exp_time = null;
 		Cookie[] cookies = request.getCookies();
 		if(cookies != null) {
 			for (int i=0; i < cookies.length; i++){
@@ -48,7 +42,9 @@
 				}
 				if(cookies[i].getName().equals("auth")){
 					auth = cookies[i].getValue();
-					System.out.println(auth);
+				}
+				if(cookies[i].getName().equals("exp_time")){
+					exp_time = cookies[i].getValue();
 				}
 			}
 		}
@@ -56,7 +52,14 @@
 			userID = (String) session.getAttribute("userID");
 			userIP = (String) session.getAttribute("userIP");
 		}
-		
+		int auth_exp = sf.format(nowTime).compareTo( URLDecoder.decode(exp_time,"UTF-8")); // 불충분한 세션 만료 방지 2021-05-04
+		if (auth_exp > 0) { // 불충분한 세션 만료 방지 2021-05-04
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("alert('세션이 만료되었습니다.')");
+			script.println("location.href='http://172.30.1.51/myapp/logoutAction.jsp'");
+			script.println("</script>");
+		} else {	    
 	%>
 
 	<nav class="navbar navbar-default">
@@ -99,7 +102,7 @@
 					data-toggle="dropdown" role="button" aria-haspopup="true"
 					aria-expanded="false">회원관리<span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li><a href="logoutAction.jsp?userid=<%=userID %>">로그아웃</a></li>
+						<li><a href="logoutAction.jsp">로그아웃</a></li>
 					</ul></li>
 			</ul>
 			<%
@@ -132,10 +135,11 @@
 			<p> 로그인 후 세션 ID : <%=session.getId() %></p>
 			<p>	로그인 시간 : <%=URLDecoder.decode(login_time,"UTF-8") %> </p>
 			<p>	현재 시간 : <%=sf.format(nowTime) %> </p>
-			<p>	세션 만료 시간 : </p>
+			<p>	세션 만료 시간 : <%=URLDecoder.decode(exp_time,"UTF-8") %></p>
 			<p>	쿠키 내 사용자 식별 값 : <%=auth %></p>
 		</div>
-		<%} 
+		<%}
+		}
 		%>
 	</div>
 	<div class="container">
