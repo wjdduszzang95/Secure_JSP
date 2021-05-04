@@ -46,6 +46,7 @@
 				HttpSession new_session = request.getSession(true); // 세션 고정 방지 2021-05-04
 				new_session.setAttribute("userID", user.getUserID()); // 세션에 userID 저장
 				new_session.setAttribute("userIP", request.getRemoteAddr()); // 세션에 접속IP 저장
+				new_session.setAttribute("test", "test"); // git test 용				
 				
 				int IP_result2 = userDAO.insert_ip(user.getUserID(), request.getRemoteAddr()); // 세션 재사용 방지 2021-05-04
 				if(IP_result2 == -1){
