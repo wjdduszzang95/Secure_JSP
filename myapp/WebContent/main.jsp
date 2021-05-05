@@ -40,9 +40,6 @@
 				if(cookies[i].getName().equals("login_time")){
 					login_time = cookies[i].getValue();
 				}
-				if(cookies[i].getName().equals("auth")){
-					auth = cookies[i].getValue();
-				}
 				if(cookies[i].getName().equals("exp_time")){
 					exp_time = cookies[i].getValue();
 				}
@@ -51,6 +48,7 @@
 		if ((String) session.getAttribute("userID") != null) {
 			userID = (String) session.getAttribute("userID");
 			userIP = (String) session.getAttribute("userIP");
+			auth = (String) session.getAttribute("auth");
 		}
 		int auth_exp = sf.format(nowTime).compareTo( URLDecoder.decode(exp_time,"UTF-8")); // 불충분한 세션 만료 방지 2021-05-04
 		if (auth_exp > 0) { // 불충분한 세션 만료 방지 2021-05-04
@@ -124,8 +122,8 @@
 			<p> 로그인 후 세션 ID : <%=session.getId() %></p>
 			<p>	로그인 시간 : <%=URLDecoder.decode(login_time,"UTF-8") %> </p>
 			<p>	현재 시간 : <%=sf.format(nowTime) %> </p>
-			<p>	세션 만료 시간 : </p>
-			<p>	쿠키 내 사용자 식별 값 : <%=auth %></p>
+			<p>	세션 만료 시간 :  <%=URLDecoder.decode(exp_time,"UTF-8") %>  </p>
+			<p>	세션 내 사용자 식별 값 : <%=auth %></p>
 		<% 
 			} else {
 		%>
@@ -136,7 +134,7 @@
 			<p>	로그인 시간 : <%=URLDecoder.decode(login_time,"UTF-8") %> </p>
 			<p>	현재 시간 : <%=sf.format(nowTime) %> </p>
 			<p>	세션 만료 시간 : <%=URLDecoder.decode(exp_time,"UTF-8") %></p>
-			<p>	쿠키 내 사용자 식별 값 : <%=auth %></p>
+			<p>	세션 내 사용자 식별 값 : <%=auth %></p>
 		</div>
 		<%}
 		}

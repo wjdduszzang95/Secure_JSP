@@ -47,7 +47,14 @@
 				new_session.setMaxInactiveInterval(10*60); // 불충분한 세션 만료 방지 2021-05-04
 				new_session.setAttribute("userID", user.getUserID()); // 세션에 userID 저장
 				new_session.setAttribute("userIP", request.getRemoteAddr()); // 세션에 접속IP 저장
-				new_session.setAttribute("test", "test"); // git test 용				
+				
+				String auth = null;
+				if(user.getUserID() == "admin"){ // 세션에 인증 값 저장
+					new_session.setAttribute("auth", "admin"); // 쿠키 변조 방지 2021-05-05
+				}
+				else{
+					new_session.setAttribute("auth", user.getUserID()); // 쿠키 변조 방지 2021-05-05
+				}
 				
 				int IP_result2 = userDAO.insert_ip(user.getUserID(), request.getRemoteAddr()); // 세션 재사용 방지 2021-05-04
 				if(IP_result2 == -1){
@@ -64,17 +71,10 @@
 				
 				Calendar cal = Calendar.getInstance(); // 불충분한 세션 만료 방지 2021-05-04
 				cal.setTime(nowTime); // 불충분한 세션 만료 방지 2021-05-04
-				cal.add(Calendar.MINUTE, 1); // 불충분한 세션 만료 방지 2021-05-04
+				cal.add(Calendar.MINUTE, 10); // 불충분한 세션 만료 방지 2021-05-04
 
-				String auth = null;
-				if(user.getUserID() == "admin"){
-					auth = "admin";
-				}
-				else{
-					auth = user.getUserID();
-				}
-				String cookieName[] = {"auth","login_time","exp_time"};
-				String cookieValue[] = {auth,URLEncoder.encode(sf.format(nowTime),"UTF-8"),URLEncoder.encode(sf.format(cal.getTime()),"UTF-8")};
+				String cookieName[] = {"login_time","exp_time"};
+				String cookieValue[] = {URLEncoder.encode(sf.format(nowTime),"UTF-8"),URLEncoder.encode(sf.format(cal.getTime()),"UTF-8")};
 				
 				for(int i=0; i<cookieName.length; i++){
 					Cookie cookie = new Cookie(cookieName[i],cookieValue[i]);
