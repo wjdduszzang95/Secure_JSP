@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/custom.css">
 
-<title>취약한 웹사이트</title>
+<title>안전한 웹사이트</title>
 <style type="text/css">
 	a, a:hover{
 		color: :#000000;
@@ -49,7 +49,7 @@
 				<span class="icon-bar"></span>
 				<!-- 게시판 아이콘 작대기(-) 하나를 의미 -->
 			</button>
-			<a class="navbar-brand" href="main.jsp">취약한 웹사이트</a>
+			<a class="navbar-brand" href="main.jsp">안전한 웹사이트</a>
 		</div>
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">

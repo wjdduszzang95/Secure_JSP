@@ -2,6 +2,7 @@ package borad;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -63,12 +64,15 @@ public class BoradDAO {
 	
 	public ArrayList<Borad> getSearchedList(int pageNumber, String searchWord){
 		int value = getNext() - (pageNumber - 1) * 10;
-		String query = "SELECT * FROM (SELECT * FROM BOARD WHERE ID <" + value + " AND TITLE LIKE '%" + searchWord + "%' ORDER BY ID DESC) WHERE ROWNUM <= 10";
+		String query = "SELECT * FROM (SELECT * FROM BOARD WHERE ID < ? AND TITLE LIKE '%' || ? || '%' ORDER BY ID DESC) WHERE ROWNUM <= 10";
 		System.out.println(query);
 		ArrayList<Borad> list = new ArrayList<Borad>();
 		try {
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(query);
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, value);
+			pstmt.setString(2, searchWord);
+			rs = pstmt.executeQuery();
+			
 			while(rs.next()) {
 				Borad borad = new Borad();
 				borad.setCONTENT(rs.getString(1));
