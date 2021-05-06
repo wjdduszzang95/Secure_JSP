@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="borad.BoradDAO"%>
 <%@ page import="borad.Borad"%>
+<%@ page import="borad.Result"%>
 <%@ page import="java.io.PrintWriter"%>
 <%@ page import="java.util.ArrayList"%>
 <!DOCTYPE html>
@@ -99,19 +100,25 @@
 					<%
 						BoradDAO boradDAO = new BoradDAO();
 						ArrayList<Borad> list = boradDAO.getSearchedList(pageNumber, searchWord);
+						ArrayList<Result> list2 = boradDAO.getQuery_SearchWord(pageNumber, searchWord);
+						System.out.println(list.size());
 						for(int i=0; i < list.size(); i++){
 					%>
 						<tr>
 							<td><%= list.get(i).getID() %></td>
-							<td><a href="view.jsp?ID=<%= list.get(i).getID() %>"><%= list.get(i).getTITLE()%></td>
-							<td><%= list.get(i).getNAME()%></td>
+							<td><a href="view.jsp?ID=<%= list.get(i).getID() %>"><%= list.get(i).getTITLE() %></td>
+							<td><%= list.get(i).getNAME() %></td>
 						</tr>
-				<tr>
-					<h1 style="background-color: #eeeeee; text-align: center">완성된 쿼리 : <%= list.get(i).getQuery() %></h1>
-				</tr>
 					<%		
 						}
 					%>
+				<tr>
+					<h1 style="background-color: #eeeeee; text-align: center">완성된 쿼리 : <%= list2.get(0).getQuery() %></h1>
+				</tr>
+				<tr>
+					<h1 style="background-color: #eeeeee; text-align: center">검색어 : <%= list2.get(0).getSearchWord() %></h1>
+				</tr>
+
 				</tbody>
 			</table>
 			<%

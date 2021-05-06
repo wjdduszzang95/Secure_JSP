@@ -74,15 +74,12 @@ public class BoradDAO {
 			pstmt.setInt(1, value);
 			pstmt.setString(2, searchWord);
 			rs = pstmt.executeQuery();
-			int test3 = 0;
-			
 			while(rs.next()) {
 				Borad borad = new Borad();
 				borad.setCONTENT(rs.getString(1));
 				borad.setNAME(rs.getString(2));
 				borad.setTITLE(rs.getString(3));
 				borad.setID(rs.getInt(4));
-				borad.setQuery(query);
 				list.add(borad);
 			}
 		} catch (Exception e) {
@@ -90,6 +87,21 @@ public class BoradDAO {
 		}
 		return list; 
 	}
+	
+	public ArrayList<Result> getQuery_SearchWord(int pageNumber, String searchWord){
+		int value = getNext() - (pageNumber - 1) * 10;
+		String query = "SELECT * FROM (SELECT * FROM BOARD WHERE ID < ? AND TITLE LIKE '%' || ? || '%' ORDER BY ID DESC) WHERE ROWNUM <= 10";
+		ArrayList<Result> list = new ArrayList<Result>();
+		Result result = new Result();
+		
+		result.setQuery(query);
+		result.setSearchWord(searchWord);
+		
+		list.add(result);
+		
+		return list; 
+	}
+	
 	
 	public boolean nextPage(int pageNumber) {
 		int value = getNext() - (pageNumber - 1) * 10;

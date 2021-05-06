@@ -13,14 +13,7 @@ public class Borad {
 	private String TITLE;
 	private String CONTENT;
 	private String NAME;
-	private String Query;
-	
-	public String getQuery() {
-		return Query;
-	}
-	public void setQuery(String query) {
-		Query = query;
-	}
+
 	public int getID() {
 		return ID;
 	}
@@ -44,6 +37,5 @@ public class Borad {
 	}
 	public void setNAME(String nAME) {
 		NAME = nAME;
-	}
-	
+	}	
 }
