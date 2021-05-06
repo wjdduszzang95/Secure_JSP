@@ -63,15 +63,18 @@ public class BoradDAO {
 	}
 	
 	public ArrayList<Borad> getSearchedList(int pageNumber, String searchWord){
+		int test = 0;
 		int value = getNext() - (pageNumber - 1) * 10;
 		String query = "SELECT * FROM (SELECT * FROM BOARD WHERE ID < ? AND TITLE LIKE '%' || ? || '%' ORDER BY ID DESC) WHERE ROWNUM <= 10";
 		System.out.println(query);
 		ArrayList<Borad> list = new ArrayList<Borad>();
 		try {
+			int test2 = 0;
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, value);
 			pstmt.setString(2, searchWord);
 			rs = pstmt.executeQuery();
+			int test3 = 0;
 			
 			while(rs.next()) {
 				Borad borad = new Borad();
