@@ -15,6 +15,7 @@
 <body>
 	<%
 		System.out.println("test");
+		System.out.println("test");
 	
 		System.out.println("세션 token 값 : " + session.getAttribute("CSRF_Token"));
 		System.out.println("request token 값 : " + request.getParameter("token"));
