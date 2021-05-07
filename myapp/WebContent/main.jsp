@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/custom.css">
 
-<title>안전한 웹사이트</title>
+<title>취약한 웹사이트</title>
 </head>
 <body>
 	<%
@@ -55,7 +55,7 @@
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
 			script.println("alert('세션이 만료되었습니다.')");
-			script.println("location.href='http://172.30.1.51/myapp/logoutAction.jsp'");
+			script.println("location.href='http://192.168.1.54/myapp/logoutAction.jsp'");
 			script.println("</script>");
 		} else {	    
 	%>
@@ -72,7 +72,7 @@
 				<span class="icon-bar"></span>
 				<!-- 게시판 아이콘 작대기(-) 하나를 의미 -->
 			</button>
-			<a class="navbar-brand" href="main.jsp">안전한 웹사이트</a>
+			<a class="navbar-brand" href="main.jsp">취약한 웹사이트</a>
 		</div>
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
@@ -100,6 +100,7 @@
 					data-toggle="dropdown" role="button" aria-haspopup="true"
 					aria-expanded="false">회원관리<span class="caret"></span></a>
 					<ul class="dropdown-menu">
+						<li><a href="changePassword.jsp">비밀번호변경</a></li>
 						<li><a href="logoutAction.jsp">로그아웃</a></li>
 					</ul></li>
 			</ul>

@@ -2,8 +2,8 @@ package user;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class UserDAO {
 	
@@ -94,6 +94,18 @@ public class UserDAO {
 		}
 		return -1; // 데이터베이스 오류
 	}
+	
+	public int change_Password(String userID,String userPW) {
+		String query = "UPDATE MEMBER SET USERPW='" + userPW + "' WHERE USERID='" + userID + "'";
+		try {
+			stmt = conn.createStatement();
+			return stmt.executeUpdate(query);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return -1; // 데이터베이스 오류
+	}
+	
 }
 
 
