@@ -1,9 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="borad.BoradDAO"%>
-<%@ page import="borad.Borad"%>
-<%@ page import="java.io.PrintWriter"%>
-<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.lang.Math"%> 
+	
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,12 +11,6 @@
 <link rel="stylesheet" href="css/custom.css">
 
 <title>취약한 웹사이트</title>
-<style type="text/css">
-	a, a:hover{
-		color: :#000000;
-		text-decoration: none;
-	}
-</style>
 </head>
 <body>
 	<%
@@ -26,10 +18,10 @@
 		if ((String) session.getAttribute("userID") != null) {
 			userID = (String) session.getAttribute("userID");
 		}
-		int pageNumber = 1;
-		if(request.getParameter("pageNumber")!= null){
-			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
-		}
+	  	int CSRF_Token = 0;
+		CSRF_Token = (int)(Math.random()*100);
+		session.setAttribute("CSRF_Token", CSRF_Token); // 세션에 CSRF_Token 세팅
+		System.out.println(" jsp에서 token 값 : " + CSRF_Token);
 	%>
 
 	<nav class="navbar navbar-default">
@@ -49,8 +41,8 @@
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li><a href="main.jsp">메인</a></li>
-				<li class="active"><a href="borad.jsp">게시판</a></li>
+				<li class="active"><a href="main.jsp">메인</a></li>
+				<li><a href="borad.jsp">게시판</a></li>
 			</ul>
 			<%
 				if (userID == null) {
@@ -72,6 +64,7 @@
 					data-toggle="dropdown" role="button" aria-haspopup="true"
 					aria-expanded="false">회원관리<span class="caret"></span></a>
 					<ul class="dropdown-menu">
+						<li><a href="changePassword.jsp">비밀번호변경</a></li>
 						<li><a href="logoutAction.jsp">로그아웃</a></li>
 					</ul></li>
 			</ul>
@@ -82,51 +75,21 @@
 		</div>
 	</nav>
 	<div class="container">
-		<div class="row">
-			<table class="table table-striped"
-				style="text-align: center; border: 1px solid #dddddd;">
-				<tr>
-					<th style="background-color: #eeeeee; text-align: center">번호</th>
-					<th style="background-color: #eeeeee; text-align: center">제목</th>
-					<th style="background-color: #eeeeee; text-align: center">작성자</th>
-				</tr>
-					<%
-						BoradDAO boradDAO = new BoradDAO();
-						ArrayList<Borad> list = boradDAO.getList(pageNumber);
-						for(int i=0; i < list.size(); i++){
-					%>
-						<tr>
-							<td><%= list.get(i).getID() %></td>
-							<td><a href="view.jsp?ID=<%= list.get(i).getID() %>"><%= list.get(i).getTITLE()%></td>
-							<td><%= list.get(i).getNAME()%></td>
-						</tr>
-					<%		
-						}
-					%>
-				</tbody>
-			</table>
-			<%
-				if(pageNumber != 1){
-			%>
-			<a href="borad.jsp?pageNumber=<%= pageNumber-1 %>" class="btn btn-success btn-arrow-left">이전</a>
-			<%
-				} if(boradDAO.nextPage(pageNumber+1)){
-			%>
-			<a href="borad.jsp?pageNumber=<%= pageNumber+1 %>" class="btn btn-success btn-arrow-right">다음</a>
-			<%		
-				}
-			%>
-			<form method="get" action="searchedBorad.jsp">
-			<div class="col-lg-4">
-				<input type="text" class="form-control pull-right" placeholder="Search" name="searchWord" />
+		<div class="col-lg-4"></div>
+		<div class="col-lg-4">
+			<div class="jumbotron" style="padding-top: 20px;">
+				<form action="changePasswordAction.jsp" method="get">
+					<h3 style="text-align: center;">비밀번호 변경 화면</h3>
+					<div class="form-group">
+						<input type="password" class="form-control" placeholder="새 비밀번호"
+							name="userPW" maxlength="20">
+					</div>
+					 <input type="hidden" name="token" id="token" value=<%= CSRF_Token %>>   
+					<input type="submit" class="btn btn-primary form-control" value="비밀번호 변경">
+				</form>
 			</div>
-				<button class="btn btn-primary" type="submit">
-				<span class="glyphicon glyphicon-search">
-				</span>
-				</button>
-			</form>
-			<a href="write.jsp" class="btn btn-primary pull-right">글쓰기</a>
 		</div>
+		<div class="col-lg-4"></div>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>
