@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="java.lang.Math"%> 
+<%@ page import="java.lang.Math"%> <!-- git commit 용 -->
 	
 <!DOCTYPE html>
 <html>
@@ -19,7 +19,7 @@
 			userID = (String) session.getAttribute("userID");
 		}
 	  	int CSRF_Token = 0;
-		CSRF_Token = (int)(Math.random()*100);
+		CSRF_Token = (int)(Math.random()*100); /* git commit 용  */
 		session.setAttribute("CSRF_Token", CSRF_Token); // 세션에 CSRF_Token 세팅
 	%>
 
@@ -83,7 +83,7 @@
 						<input type="password" class="form-control" placeholder="새 비밀번호"
 							name="userPW" maxlength="20">
 					</div>
-					 <input type="hidden" name="token" value=<%= CSRF_Token %>>   
+					 <input type="hidden" name="token" value=<%= CSRF_Token %>>   <!-- git commit 용  -->
 					<input type="submit" class="btn btn-primary form-control" value="비밀번호 변경">
 				</form>
 			</div>

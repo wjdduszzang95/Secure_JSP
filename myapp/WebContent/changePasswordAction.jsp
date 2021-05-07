@@ -17,7 +17,7 @@
 		if(session.getAttribute("CSRF_Token") != request.getParameter("CSRF_Token")){ // 세션에 있는 토큰값과 요청에 있는 토큰값이 불일치 시
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
-			script.println("alert('토큰 값이 일치하지 않습니다.')");
+			script.println("alert('토큰 값이 일치하지 않습니다.')");  /* git commit 용  */
 			script.println("history.back()");
 			script.println("</script>");	
 		}else{
