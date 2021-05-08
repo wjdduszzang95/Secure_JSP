@@ -21,7 +21,6 @@
 	  	int CSRF_Token = 0;
 		CSRF_Token = (int)(Math.random()*100);
 		session.setAttribute("CSRF_Token", CSRF_Token); // 세션에 CSRF_Token 세팅
-		System.out.println(" jsp에서 token 값 : " + CSRF_Token);
 	%>
 
 	<nav class="navbar navbar-default">
