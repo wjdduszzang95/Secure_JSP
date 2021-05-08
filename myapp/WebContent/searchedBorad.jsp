@@ -34,6 +34,9 @@
 		String searchWord = null;
 		if(request.getParameter("searchWord")!= null){
 			searchWord = (String)request.getParameter("searchWord");
+			searchWord = searchWord.replace("<", "&lt;"); // XSS 방지 2021-05-08
+			searchWord = searchWord.replace(">", "&gt;");
+
 			System.out.println(searchWord);
 		}
 	%>

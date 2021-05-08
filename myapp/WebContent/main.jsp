@@ -55,7 +55,7 @@
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
 			script.println("alert('세션이 만료되었습니다.')");
-			script.println("location.href='http://192.168.1.54/myapp/logoutAction.jsp'");
+			script.println("location.href='http://172.30.1.51/myapp/logoutAction.jsp'");
 			script.println("</script>");
 		} else {	    
 	%>

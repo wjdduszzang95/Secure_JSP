@@ -35,9 +35,13 @@
 				script.println("history.back()");
 				script.println("</script>");
 			} else {
-
-				BoradDAO boradDAO = new BoradDAO();
-				int result = boradDAO.write(borad.getTITLE(), userID, borad.getCONTENT());
+				
+				BoradDAO boradDAO = new BoradDAO();  // XSS 방지 2021-05-08
+				String CONTENT = borad.getCONTENT();
+				CONTENT = CONTENT.replace("<", "&lt;");
+				CONTENT = CONTENT.replace(">", "&gt;");
+				
+				int result = boradDAO.write(borad.getTITLE(), userID, CONTENT);
 
 				if (result == -1) {
 					PrintWriter script = response.getWriter();

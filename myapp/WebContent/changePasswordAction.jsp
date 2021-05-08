@@ -13,18 +13,10 @@
 <title>취약한 웹 사이트</title>
 </head>
 <body>
-	<%
-		System.out.println("test");
-		System.out.println("test");
-		System.out.println("test");
-		
+	<%		
+		String CSRF_Token = session.getAttribute("CSRF_Token").toString();
 	
-		System.out.println("세션 token 값 : " + session.getAttribute("CSRF_Token"));
-		System.out.println("request token 값 : " + request.getParameter("token"));
-		System.out.println("세션 token type : " + session.getAttribute("CSRF_Token").getClass().getName());
-		System.out.println("request token type : " + request.getParameter("token").getClass().getName());
-	
-		if(session.getAttribute("CSRF_Token") != request.getParameter("token")){ // 세션에 있는 토큰값과 요청에 있는 토큰값이 불일치 시
+		if(!CSRF_Token.equals(request.getParameter("token"))){ // 세션에 있는 토큰값과 요청에 있는 토큰 값이 불일치 시
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
 			script.println("alert('토큰 값이 일치하지 않습니다.')");
