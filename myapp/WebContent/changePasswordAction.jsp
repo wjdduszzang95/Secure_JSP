@@ -13,30 +13,21 @@
 <title>취약한 웹 사이트</title>
 </head>
 <body>
-	<%		
-		String CSRF_Token = session.getAttribute("CSRF_Token").toString();
-	
-		if(!CSRF_Token.equals(request.getParameter("token"))){ // 세션에 있는 토큰값과 요청에 있는 토큰 값이 불일치 시
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('토큰 값이 일치하지 않습니다.')");
-			script.println("history.back()");
-			script.println("</script>");	
-		}else{
+	<%
 			String userID = null;
+			String New_userPW = request.getParameter("New_userPW"); 
 			if((String)session.getAttribute("userID") != null){
 				userID = (String)session.getAttribute("userID");
 			}
-			if(user.getUserPW() == null){
+			if(New_userPW == null){
 				PrintWriter script = response.getWriter();
 				script.println("<script>");
 				script.println("alert('비밀번호를 입력하세요.')");
 				script.println("history.back()");
 				script.println("</script>");	
 			} else {
-				
 				UserDAO userDAO = new UserDAO();
-				int result = userDAO.change_Password(userID, user.getUserPW());
+				int result = userDAO.change_Password(userID, New_userPW);
 				
 				if(result == -1){
 					PrintWriter script = response.getWriter();
@@ -53,8 +44,6 @@
 					script.println("</script>");
 				}
 			}
-		}
-
 	%>
 </body>
 </html>

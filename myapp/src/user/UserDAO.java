@@ -42,47 +42,6 @@ public class UserDAO {
 		return -2; // 데이터베이스 오류
 	}
 	
-	public int insert_ip (String userID, String userIP) { // 세션 재사용 방지
-		String query = "INSERT INTO CUR_LOGIN (USERID, USERIP) VALUES ('" 
-				+ userID + "','" + userIP + "')" ;
-		try {
-			stmt = conn.createStatement();
-			return stmt.executeUpdate(query);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return -1; // 데이터베이스 오류
-	}
-	
-	public int select_ip(String userID,String userIP) { // 세션 재사용 방지	
-		String query = "SELECT USERIP FROM CUR_LOGIN WHERE USERID = '" + userID + "'";
-		try {
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(query);
-			if(rs.next()) {
-				if(rs.getString(1).contentEquals(userIP)) {
-					return 1; // 중복 로그인 아님 (같은 IP)
-				}
-				else
-					return 0; // 중복 로그인 (다른 IP)
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return -1; // 데이터베이스 오류
-	}
-
-	public int delete_ip (String userID) { // 세션 재사용 방지
-		String query = "DELETE FROM CUR_LOGIN WHERE USERID='" + userID + "'" ; 
-		try {
-			stmt = conn.createStatement();
-			return stmt.executeUpdate(query);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return -1; // 데이터베이스 오류
-	}
-	
 	public int join(User user) {
 		String query = "INSERT INTO MEMBER (USERID,USERPW,USERNAME) VALUES('" 
 				+ user.getUserID() + "','" + user.getUserPW() + "','" + user.getUserName() + "')" ;
@@ -105,7 +64,6 @@ public class UserDAO {
 		}
 		return -1; // 데이터베이스 오류
 	}
-	
 }
 
 

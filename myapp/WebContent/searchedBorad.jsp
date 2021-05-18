@@ -34,10 +34,6 @@
 		String searchWord = null;
 		if(request.getParameter("searchWord")!= null){
 			searchWord = (String)request.getParameter("searchWord");
-			searchWord = searchWord.replace("<", "&lt;"); // XSS 방지 2021-05-08
-			searchWord = searchWord.replace(">", "&gt;");
-
-			System.out.println(searchWord);
 		}
 	%>
 
@@ -104,7 +100,6 @@
 						BoradDAO boradDAO = new BoradDAO();
 						ArrayList<Borad> list = boradDAO.getSearchedList(pageNumber, searchWord);
 						ArrayList<Result> list2 = boradDAO.getQuery_SearchWord(pageNumber, searchWord);
-						System.out.println(list.size());
 						for(int i=0; i < list.size(); i++){
 					%>
 						<tr>

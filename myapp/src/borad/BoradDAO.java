@@ -2,7 +2,6 @@ package borad;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -43,7 +42,8 @@ public class BoradDAO {
 		
 	public ArrayList<Borad> getList(int pageNumber){
 		int value = getNext() - (pageNumber - 1) * 10;
-		String query = "SELECT * FROM (SELECT * FROM BOARD WHERE ID <" + value + "ORDER BY ID DESC) WHERE ROWNUM <= 10";
+		String query = "SELECT * FROM (SELECT * FROM BOARD WHERE ID <" + value + ") WHERE ROWNUM <= 10";
+		System.out.println(query);
 		ArrayList<Borad> list = new ArrayList<Borad>();
 		try {
 			stmt = conn.createStatement();
@@ -62,18 +62,50 @@ public class BoradDAO {
 		return list; 
 	}
 	
-	public ArrayList<Borad> getSearchedList(int pageNumber, String searchWord){
-		int test = 0;
+	public ArrayList<Borad> getSortList(int pageNumber,String sort){
 		int value = getNext() - (pageNumber - 1) * 10;
-		String query = "SELECT * FROM (SELECT * FROM BOARD WHERE ID < ? AND TITLE LIKE '%' || ? || '%' ORDER BY ID DESC) WHERE ROWNUM <= 10";
+		String query = "SELECT * FROM (SELECT * FROM BOARD WHERE ID <" + value + " ORDER BY " + sort + " DESC) WHERE ROWNUM <= 10";
 		System.out.println(query);
 		ArrayList<Borad> list = new ArrayList<Borad>();
 		try {
-			int test2 = 0;
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setInt(1, value);
-			pstmt.setString(2, searchWord);
-			rs = pstmt.executeQuery();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			while(rs.next()) {
+				Borad borad = new Borad();
+				borad.setCONTENT(rs.getString(1));
+				borad.setNAME(rs.getString(2));
+				borad.setTITLE(rs.getString(3));
+				borad.setID(rs.getInt(4));
+				list.add(borad);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list; 
+	}
+	
+	public ArrayList<Result> getQuery_SortWord(int pageNumber, String sort){
+		int value = getNext() - (pageNumber - 1) * 10;
+		String query = "SELECT * FROM (SELECT * FROM BOARD WHERE ID <" + value + " ORDER BY " + sort + " DESC) WHERE ROWNUM <= 10";
+		ArrayList<Result> list = new ArrayList<Result>();
+		Result result = new Result();
+		
+		result.setQuery(query);
+		result.setSort(sort);
+		
+		list.add(result);
+		
+		return list; 
+	}
+	
+	public ArrayList<Borad> getSearchedList(int pageNumber, String searchWord){
+		int value = getNext() - (pageNumber - 1) * 10;
+		String query = "SELECT * FROM (SELECT * FROM BOARD WHERE ID <" + value + " AND TITLE LIKE '%" + searchWord + "%') WHERE ROWNUM <= 10";
+		System.out.println(query);
+		ArrayList<Borad> list = new ArrayList<Borad>();
+		try {
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
 			while(rs.next()) {
 				Borad borad = new Borad();
 				borad.setCONTENT(rs.getString(1));
@@ -90,7 +122,7 @@ public class BoradDAO {
 	
 	public ArrayList<Result> getQuery_SearchWord(int pageNumber, String searchWord){
 		int value = getNext() - (pageNumber - 1) * 10;
-		String query = "SELECT * FROM (SELECT * FROM BOARD WHERE ID < ? AND TITLE LIKE '%' || ? || '%' ORDER BY ID DESC) WHERE ROWNUM <= 10";
+		String query = "SELECT * FROM (SELECT * FROM BOARD WHERE ID <" + value + " AND TITLE LIKE '%" + searchWord + "%') WHERE ROWNUM <= 10";
 		ArrayList<Result> list = new ArrayList<Result>();
 		Result result = new Result();
 		
@@ -118,9 +150,9 @@ public class BoradDAO {
 		return false; 
 	}
 	
-	public int write(String TITLE,String NAME,String CONTENT) {
-		String query = "INSERT INTO BOARD (CONTENT,TITLE,NAME,ID) VALUES('" 
-		+ CONTENT + "','" + TITLE + "','" + NAME + "'," + getNext() + ")" ;
+	public int write(String TITLE,String NAME,String CONTENT,String FILENAME,String ORIGIN_FILENAME) {
+		String query = "INSERT INTO BOARD (CONTENT,TITLE,NAME,ID,FILENAME,ORIGIN_FILENAME) VALUES('" 
+		+ CONTENT + "','" + TITLE + "','" + NAME + "'," + getNext() + ",'" + FILENAME + "','" + ORIGIN_FILENAME + "')" ;
 		try {
 			stmt = conn.createStatement();
 			return stmt.executeUpdate(query);
@@ -130,8 +162,9 @@ public class BoradDAO {
 		return -1; // 데이터베이스 오류
 	}
 	
-	public Borad getBorad(int ID) {
+	public Borad getBorad(String ID) {
 		String query = "SELECT * FROM BOARD WHERE ID =" + ID + "";
+		System.out.println(query);
 		try {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(query);
@@ -141,6 +174,7 @@ public class BoradDAO {
 				borad.setNAME(rs.getString(2));
 				borad.setTITLE(rs.getString(3));
 				borad.setID(rs.getInt(4));
+				borad.setFILE(rs.getString(6));
 				return borad;
 			}
 		} catch (Exception e) {
@@ -149,7 +183,20 @@ public class BoradDAO {
 		return null; 
 	}
 	
-	public int update(int ID,String TITLE,String CONTENT) {
+	public ArrayList<Result> getQuery_Borad(String ID){
+		String query = "SELECT * FROM BOARD WHERE ID =" + ID + "";;
+		ArrayList<Result> list = new ArrayList<Result>();
+		Result result = new Result();
+		
+		result.setQuery(query);
+		result.setID(ID);
+		
+		list.add(result);
+		
+		return list; 
+	}
+	
+	public int update(String ID,String TITLE,String CONTENT) {
 		String query = "UPDATE BOARD SET TITLE='" + TITLE + "',CONTENT='" + CONTENT + "'" + "WHERE ID =" + ID + "";
 		try {
 			stmt = conn.createStatement();
@@ -160,7 +207,7 @@ public class BoradDAO {
 		return -1; // 데이터베이스 오류
 	}
 	
-	public int delete(int ID) {
+	public int delete(String ID) {
 		String query = "DELETE FROM BOARD WHERE ID=" + ID + "";
 		try {
 			stmt = conn.createStatement();
@@ -170,4 +217,22 @@ public class BoradDAO {
 		}
 		return -1; // 데이터베이스 오류
 	}
+	
+	public Borad getFILE(String ID) {
+		String query = "SELECT FILENAME, ORIGIN_FILENAME FROM BOARD WHERE ID =" + ID + "";
+		try {
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			if(rs.next()) {
+				Borad borad = new Borad();
+				borad.setFILE(rs.getString(1));
+				borad.setOGIGIN_FILE(rs.getString(2));
+				return borad;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null; 
+	}
+	
 }

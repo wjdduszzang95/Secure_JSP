@@ -1,10 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.io.PrintWriter"%>
-<%@ page import="java.util.*"%>
+<%@ page import="java.util.Date"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.net.URLDecoder"%>
-<%@ page import="user.UserDAO"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,47 +16,29 @@
 </head>
 <body>
 	<%
-		UserDAO userDAO = new UserDAO();
-		int result = userDAO.select_ip((String) session.getAttribute("userID"),(String) session.getAttribute("userIP")); // 세션 재사용 방지
-		if(result == 0){
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('중복 로그인입니다.')");
-			script.println("history.back()");
-			script.println("</script>");
-		}
-		
 		Date nowTime = new Date();
-		SimpleDateFormat sf = new SimpleDateFormat("yyyy년 MM월 dd일 a hh:mm:ss");
+	    SimpleDateFormat sf = new SimpleDateFormat("yyyy년 MM월 dd일 a hh:mm:ss");
 		String userID = null;
 		String userIP = null;
 		String login_time = null;
 		String auth = null;
-		String exp_time = null;
 		Cookie[] cookies = request.getCookies();
 		if(cookies != null) {
 			for (int i=0; i < cookies.length; i++){
 				if(cookies[i].getName().equals("login_time")){
 					login_time = cookies[i].getValue();
 				}
-				if(cookies[i].getName().equals("exp_time")){
-					exp_time = cookies[i].getValue();
+				if(cookies[i].getName().equals("auth")){
+					auth = cookies[i].getValue();
+					System.out.println(auth);
 				}
 			}
 		}
 		if ((String) session.getAttribute("userID") != null) {
 			userID = (String) session.getAttribute("userID");
 			userIP = (String) session.getAttribute("userIP");
-			auth = (String) session.getAttribute("auth");
 		}
-		int auth_exp = sf.format(nowTime).compareTo( URLDecoder.decode(exp_time,"UTF-8")); // 불충분한 세션 만료 방지 2021-05-04
-		if (auth_exp > 0) { // 불충분한 세션 만료 방지 2021-05-04
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('세션이 만료되었습니다.')");
-			script.println("location.href='http://172.30.1.51/myapp/logoutAction.jsp'");
-			script.println("</script>");
-		} else {	    
+		
 	%>
 
 	<nav class="navbar navbar-default">
@@ -123,8 +104,7 @@
 			<p> 로그인 후 세션 ID : <%=session.getId() %></p>
 			<p>	로그인 시간 : <%=URLDecoder.decode(login_time,"UTF-8") %> </p>
 			<p>	현재 시간 : <%=sf.format(nowTime) %> </p>
-			<p>	세션 만료 시간 :  <%=URLDecoder.decode(exp_time,"UTF-8") %>  </p>
-			<p>	세션 내 사용자 식별 값 : <%=auth %></p>
+			<p>	쿠키 내 사용자 식별 값 : <%=auth %></p>
 		<% 
 			} else {
 		%>
@@ -134,11 +114,9 @@
 			<p> 로그인 후 세션 ID : <%=session.getId() %></p>
 			<p>	로그인 시간 : <%=URLDecoder.decode(login_time,"UTF-8") %> </p>
 			<p>	현재 시간 : <%=sf.format(nowTime) %> </p>
-			<p>	세션 만료 시간 : <%=URLDecoder.decode(exp_time,"UTF-8") %></p>
-			<p>	세션 내 사용자 식별 값 : <%=auth %></p>
+			<p>	쿠키 내 사용자 식별 값 : <%=auth %></p>
 		</div>
-		<%}
-		}
+		<%} 
 		%>
 	</div>
 	<div class="container">

@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="java.io.PrintWriter"%>
 <%@ page import="borad.BoradDAO"%>
 <%@ page import="borad.Borad"%>
 <%@ page import="borad.Result"%>
+<%@ page import="java.io.PrintWriter"%>
 <%@ page import="java.util.ArrayList"%>
 <!DOCTYPE html>
 <html>
@@ -14,6 +14,12 @@
 <link rel="stylesheet" href="css/custom.css">
 
 <title>취약한 웹사이트</title>
+<style type="text/css">
+	a, a:hover{
+		color: :#000000;
+		text-decoration: none;
+	}
+</style>
 </head>
 <body>
 	<%
@@ -21,21 +27,10 @@
 		if ((String) session.getAttribute("userID") != null) {
 			userID = (String) session.getAttribute("userID");
 		}
-		String ID = null;
-		if (request.getParameter("ID") != null) {
-			// ID = Integer.parseInt(request.getParameter("ID"));
-			ID = (request.getParameter("ID"));
+		int pageNumber = 1;
+		if(request.getParameter("pageNumber")!= null){
+			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
 		}
-		if (ID == null) {
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('유효하지 않은 글입니다.')");
-			script.println("location.href='board.jsp'");
-			script.println("</script>");
-		}
-		Borad borad = new BoradDAO().getBorad(ID);
-		BoradDAO boradDAO = new BoradDAO();
-		ArrayList<Result> list = boradDAO.getQuery_Borad(ID);
 	%>
 
 	<nav class="navbar navbar-default">
@@ -91,58 +86,62 @@
 		<div class="row">
 			<table class="table table-striped"
 				style="text-align: center; border: 1px solid #dddddd;">
-				
 				<tr>
-					<th colspan="3" style="background-color: #eeeeee; text-align: center">게시판 글보기</th>
+					<th style="background-color: #eeeeee; text-align: center"><a href="sort.jsp?sort=ID">번호</a></th>
+					<th style="background-color: #eeeeee; text-align: center"><a href="sort.jsp?sort=TITLE">제목</a></th>
+					<th style="background-color: #eeeeee; text-align: center"><a href="sort.jsp?sort=NAME">작성자</a></th>
+				</tr>
+					<%
+						BoradDAO boradDAO = new BoradDAO();
+						String sort = null;
+						if(request.getParameter("sort") != null){
+							sort = request.getParameter("sort");
+						}
+						ArrayList<Borad> list = boradDAO.getSortList(pageNumber, sort);
+						ArrayList<Result> list2 = boradDAO.getQuery_SortWord(pageNumber, sort);
+						for(int i=0; i < list.size(); i++){
+					%>
+						<tr>
+							<td><%= list.get(i).getID() %></td>
+							<td><a href="view.jsp?ID=<%= list.get(i).getID() %>"><%= list.get(i).getTITLE()%></td>
+							<td><%= list.get(i).getNAME()%></td>
+						</tr>
+					<%		
+						}
+					%>
+					
+				<tr>
+					<h1 style="background-color: #eeeeee; text-align: center">완성된 쿼리 : <%= list2.get(0).getQuery() %></h1>
+				</tr>
+				<tr>
+					<h1 style="background-color: #eeeeee; text-align: center">정렬기준 : <%= list2.get(0).getSort() %></h1>
 				</tr>
 				
-				<%-- .replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>")
-				 --%>
-				<tr>
-					<td style="width: 20%;">글 제목</td>
-					<td colspan="2"><%= borad.getTITLE()%></td>
-				</tr>
-				<tr>
-					<td style="width: 20%;">작성자</td>
-					<td colspan="2"><%=borad.getNAME() %></td>
-				</tr>
-				<%-- .replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>")  --%>
-				<tr>
-					<td style="width: 20%;">내용</td>
-					<td colspan="2" style="min-height: 200px; text-align: left;">
-					<%=
-					borad.getCONTENT()
-					%></td>
-				</tr>
-				<tr>
-					<td style="width: 20%;">파일명</td>
-					<td colspan="2"><a href="downloadAction.jsp?FILENAME=<%= borad.getFILE() %>&ID=<%= ID %>" class="btn btn-primary"><%= borad.getFILE() %></a></td> 
-					<%-- <td colspan="2"><a href=downloadAction?ID=<%=ID%> class="btn btn-primary"><%= borad.getFILE() %></a></td> --%>
-				</tr>
-				
-				
-				<tr>
-					<h1 style="background-color: #eeeeee; text-align: center">완성된 쿼리 : <%= list.get(0).getQuery() %></h1>
-				</tr>
-				<tr>
-					<h1 style="background-color: #eeeeee; text-align: center">조회 ID : <%= list.get(0).getID() %></h1>
-				</tr>
-				
+				</tbody>
 			</table>
-			
-			<a href="borad.jsp" class="btn btn-primary">목록</a>
 			<%
-				if(userID != null && userID.equals(borad.getNAME())){
+				if(pageNumber != 1){
 			%>
-				<a href="update.jsp?ID=<%= borad.getID() %>" class="btn btn-primary">수정</a>
-				<a onclick="return confirm('정말로 삭제하시겠습니까?')"  href="deleteAction.jsp?ID=<%= borad.getID() %>" class="btn btn-primary">삭제</a>
-			
+			<a href="borad.jsp?pageNumber=<%= pageNumber-1 %>" class="btn btn-success btn-arrow-left">이전</a>
 			<%
+				} if(boradDAO.nextPage(pageNumber+1)){
+			%>
+			<a href="borad.jsp?pageNumber=<%= pageNumber+1 %>" class="btn btn-success btn-arrow-right">다음</a>
+			<%		
 				}
 			%>
+			<form method="get" action="searchedBorad.jsp">
+			<div class="col-lg-4">
+				<input type="text" class="form-control pull-right" placeholder="Search" name="searchWord" />
+			</div>
+				<button class="btn btn-primary" type="submit">
+				<span class="glyphicon glyphicon-search">
+				</span>
+				</button>
+			</form>
+			<a href="write.jsp" class="btn btn-primary pull-right">글쓰기</a>
 		</div>
 	</div>
-
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>
 </body>

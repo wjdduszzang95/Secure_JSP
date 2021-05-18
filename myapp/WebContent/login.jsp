@@ -12,9 +12,10 @@
 </head>
 <body>
 	<%
+		HttpSession session2 = request.getSession();
 		String sessionID = null;
 		String loginIP = null;
-		sessionID = session.getId();
+		sessionID = session2.getId();
 		loginIP =   request.getRemoteAddr();
 	%>
 	<nav class="navbar navbar-default">

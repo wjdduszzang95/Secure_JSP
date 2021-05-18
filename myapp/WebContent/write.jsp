@@ -70,7 +70,7 @@
 	</nav>
 	<div class="container">
 		<div class="row">
-			<form action="writeAction.jsp" method="post">
+			<form action="writeAction.jsp" method="post" enctype="multipart/form-data">
 				<table class="table table-striped"
 					style="text-align: center; border: 1px solid #dddddd;">
 					<tr>
@@ -80,7 +80,10 @@
 						<td><input type="text" class="form-control" placeholder="글 제목" name="TITLE" maxlength="50"></td>
 					</tr>
 					<tr>	
-						<td><textarea class="form-control" placeholder="글 내용"name="CONTENT" maxlength="2048" style="height: 350px;"></textarea></td>
+						<td><textarea class="form-control" placeholder="글 내용" name="CONTENT" maxlength="2048" style="height: 350px;"></textarea></td>
+					</tr>
+					<tr>
+						<td><input type="file" class="form-control" placeholder="파일" name="FILE" maxlength="500"></td>
 					</tr>
 				</table>
 				<input type="submit" class="btn btn-primary pull-right" value="글쓰기">

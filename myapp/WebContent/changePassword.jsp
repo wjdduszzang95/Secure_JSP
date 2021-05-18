@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="java.lang.Math"%> 
 	
 <!DOCTYPE html>
 <html>
@@ -18,9 +17,6 @@
 		if ((String) session.getAttribute("userID") != null) {
 			userID = (String) session.getAttribute("userID");
 		}
-	  	int CSRF_Token = 0;
-		CSRF_Token = (int)(Math.random()*100);
-		session.setAttribute("CSRF_Token", CSRF_Token); // 세션에 CSRF_Token 세팅
 	%>
 
 	<nav class="navbar navbar-default">
@@ -80,10 +76,8 @@
 				<form action="changePasswordAction.jsp" method="get">
 					<h3 style="text-align: center;">비밀번호 변경 화면</h3>
 					<div class="form-group">
-						<input type="password" class="form-control" placeholder="새 비밀번호"
-							name="userPW" maxlength="20">
+						<input type="password" class="form-control" placeholder="새 비밀번호" name="New_userPW" maxlength="20">
 					</div>
-					 <input type="hidden" name="token" id="token" value=<%= CSRF_Token %>>   
 					<input type="submit" class="btn btn-primary form-control" value="비밀번호 변경">
 				</form>
 			</div>

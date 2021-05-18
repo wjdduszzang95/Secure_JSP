@@ -28,11 +28,11 @@
 			script.println("</script>");
 		}
 
-		int ID = 0;
+		String ID = null;
 		if (request.getParameter("ID") != null) {
-			ID = Integer.parseInt(request.getParameter("ID"));
+			ID = request.getParameter("ID");
 		}
-		if (ID == 0) {
+		if (ID == null) {
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
 			script.println("alert('유효하지 않은 글입니다.')");

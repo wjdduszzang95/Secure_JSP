@@ -13,7 +13,9 @@ public class Borad {
 	private String TITLE;
 	private String CONTENT;
 	private String NAME;
-
+	private String FILE;
+	private String OGIGIN_FILE;
+	
 	public int getID() {
 		return ID;
 	}
@@ -37,5 +39,17 @@ public class Borad {
 	}
 	public void setNAME(String nAME) {
 		NAME = nAME;
+	}
+	public String getFILE() {
+		return FILE;
+	}
+	public void setFILE(String fILE) {
+		FILE = fILE;
+	}
+	public String getOGIGIN_FILE() {
+		return OGIGIN_FILE;
+	}
+	public void setOGIGIN_FILE(String oGIGIN_FILE) {
+		OGIGIN_FILE = oGIGIN_FILE;
 	}	
 }

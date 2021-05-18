@@ -86,9 +86,9 @@
 			<table class="table table-striped"
 				style="text-align: center; border: 1px solid #dddddd;">
 				<tr>
-					<th style="background-color: #eeeeee; text-align: center">번호</th>
-					<th style="background-color: #eeeeee; text-align: center">제목</th>
-					<th style="background-color: #eeeeee; text-align: center">작성자</th>
+					<th style="background-color: #eeeeee; text-align: center"><a href="sort.jsp?sort=ID">번호</a></th>
+					<th style="background-color: #eeeeee; text-align: center"><a href="sort.jsp?sort=TITLE">제목</a></th>
+					<th style="background-color: #eeeeee; text-align: center"><a href="sort.jsp?sort=NAME">작성자</a></th>
 				</tr>
 					<%
 						BoradDAO boradDAO = new BoradDAO();
